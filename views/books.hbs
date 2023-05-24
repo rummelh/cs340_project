@@ -1,0 +1,110 @@
+<html>
+<head>
+    <title>Spell Books</title>
+</head>
+<body>
+    
+    <h1>Spell Books</h1>
+
+    Here you can add, update, delete, and view the shop's available spell books.
+
+    <h2>Book Search</h2>
+
+    <form>
+
+        <fieldset>
+
+            <legend>Lookup by title</legend>
+
+            <label>
+                <input type="text" name="search_term" id="title" required="required">
+            </label>
+
+                <button type="submit">Submit Search</button>
+
+        </fieldset>
+
+    </form>
+
+    <h2>Add/Update Book</h2>
+
+    <form>
+
+        <fieldset>
+            
+            <label>Book title:
+                <input type="text" id="title">
+            </label>
+            <p></p>
+           <label>Book price:
+                <input type="number" id="price">
+            </label>
+            <p></p>
+            <button type="submit">Add book to inventory</button>
+
+        </fieldset>
+
+    </form>
+
+    <h2>Browse All Books</h2>
+    
+    <table>
+        <caption>Search Results: Spell Books Inventory</caption>
+        <thead>
+            <tr>
+                <th>Book ID</th>
+                <th>Title</th>
+                <th>List Price</th>
+                <th> </th>
+                <th> </th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>1</td>
+                <td>Beginner's Guide to Witchery</td>
+                <td>25</td>
+                <td><button type="button">Update</button></td>
+                <td><button type="button">Delete</button></td>
+            </tr>
+
+            <tr>
+                <td>2</td>
+                <td>New Age Cooking Spells</td>
+                <td>25</td>
+                <td><button type="button">Update</button></td>
+                <td><button type="button">Delete</button></td>
+            </tr>
+
+            <tr>
+                <td>3</td>
+                <td>Hitchhiker's Guide to Hexes</td>
+                <td>42</td>
+                <td><button type="button">Update</button></td>
+                <td><button type="button">Delete</button></td>
+            </tr>
+
+            <tr>
+                <td>4</td>
+                <td>Terrible, Horrible, No-Good Curse Book</td>
+                <td>50</td>
+                <td><button type="button">Update</button></td>
+                <td><button type="button">Delete</button></td>
+            </tr>
+
+            <tr>
+                <td>5</td>
+                <td>Spell Jars for Dummies</td>
+                <td>19</td>
+                <td><button type="button">Update</button></td>
+                <td><button type="button">Delete</button></td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</body>
+</html>

@@ -1,0 +1,91 @@
+<html>
+<head>
+    <title>Potion Recipes</title>
+</head>
+<body>
+    
+    <h1>Potion Recipes</h1>
+
+    Here you can add, update, delete, and view the recipes for the shops's potions.
+
+<h2>Recipe Search</h2>
+
+    <form>
+
+        <fieldset>
+
+            <legend>Find recipe for:</legend>
+
+            <select id="potion">
+                <option value="1">Example Potion 1</option>
+                <option value="2">Example Potion 2</option>
+                <option value="3">Example Potion 3</option>
+                <option value="4">Example Potion 4</option>
+            </select>
+
+            <p>
+                <button type="submit">Submit Search</button>
+            </p>
+
+        </fieldset>
+
+    </form>
+
+
+    <h2>Add New Potion Recipe</h2>
+
+    <form>
+
+        <fieldset>
+            
+            <select id="potion">
+                <option value="1">Example Potion 1</option>
+                <option value="2">Example Potion 2</option>
+                <option value="3">Example Potion 3</option>
+                <option value="4">Example Potion 4</option>
+            </select>
+            <p></p>
+            <label>Ingredient:
+            <input type="text" id="ingredient">
+            </label>
+            <p></p>
+            <label>uantity:
+            <input type="text" id="uantity">
+            </label>
+
+        </fieldset>
+
+    </form>
+
+    <h2>Browse All Recipes</h2>
+    
+    <table>
+        <caption>Search Results: Recipes</caption>
+        <thead>
+            <tr>
+                <th>Recipe ID</th>
+                <th>Potion ID</th>
+                <th>Ingredient ID</th>
+                <th>ingredient quantity</th>
+                <th> </th>
+                <th> </th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>example</td>
+                <td>example</td>
+                <td>example</td>
+                <td>example</td>
+                <td><button type="button">Update</button></td>
+                <td><button type="button">Delete</button></td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</body>
+</html>
