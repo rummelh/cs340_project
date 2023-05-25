@@ -69,14 +69,11 @@ function updateRow(data, potion_ID){
             // Get the location of the row where we found the matching person ID
             let updateRowIndex = table.getElementsByTagName("tr")[i];
 
-            let td_effect = updateRowIndex.getElementsByTagName("td_effect")[1];
-            td_effect.innerHTML = parsedData[0].potion_effect;
-
-            let td_color = updateRowIndex.getElementsByTagName("td_color")[2];
-            td_color.innerHTML = parsedData[0].potion_color;
-
-            let td_price = updateRowIndex.getElementsByTagName("td_price")[3];
-            td_price.innerHTML = parsedData[0].potion_price;
+            updateRowIndex.getElementsByTagName("td")[1].innerHTML = parsedData.potion_name;
+            updateRowIndex.getElementsByTagName("td")[2].innerHTML = parsedData.potion_effect;
+            updateRowIndex.getElementsByTagName("td")[3].innerHTML = parsedData.potion_color;
+            updateRowIndex.getElementsByTagName("td")[4].innerHTML = parsedData.potion_price;
+            
        }
     }
 }

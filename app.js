@@ -85,23 +85,27 @@ app.delete('/delete-potion-ajax/', function(req, res, next) {
   
   app.put('/put-potion-ajax', function(req,res,next){
     let data = req.body;
+    console.log('Data received:', data);
   
-    let potion_name = parseInt(data.potion_name);
-    let potion_effect = parseInt(data.potion_effect);
-    let potion_color = parseInt(data.potion_color);
-    let potion_price = parseInt(data.potion_price);
-  
-    let queryUpdatePotion = `UPDATE Potions SET potion_effect = '${data.potion_effect}', potion_color = '${data.potion_color}', potion_price = ${data.potion_price} WHERE potion_ID = ?`; 
-  
+    let queryUpdatePotion = `UPDATE Potions SET potion_effect = ? , potion_color = ?, potion_price = ? WHERE potion_ID = ?`; 
+    let selectPotion = `SELECT * FROM Potions WHERE potion_ID = ?`
           // Run the 1st query
-          db.pool.query(queryUpdatePotion, [potion_effect, potion_color, potion_price, potion_name], function(error, rows, fields){
+          db.pool.query(queryUpdatePotion, [`${data.potion_effect}`, `${data.potion_color}`, `${data.potion_price}`, data.potion_name], function(error, rows, fields){
               if (error) {
   
               // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
               console.log(error);
               res.sendStatus(400);
               } else {
-                res.send(rows);
+                db.pool.query(selectPotion, [data.potion_name], function(error,row,fields){
+                    if (error){
+                        console.log(error);
+                        res.sendStatus(400);
+                    } else {
+                        res.send(rows);
+                    }
+                }
+                )
               }
   
   })});

@@ -301,14 +301,13 @@ since one potion can be purchased by many customers, and one customer can purcha
 potions, as demonstrated below via sample data. */
 
 CREATE TABLE Potion_Transactions (
-    potion_recipes_ID int NOT NULL AUTO_INCREMENT,
     transaction_ID int NOT NULL,
     potion_ID int NOT NULL,
     potion_price int NOT NULL,
     quantity int NOT NULL,
     FOREIGN KEY (transaction_ID) REFERENCES Transactions(transaction_ID) ON DELETE CASCADE,
     FOREIGN KEY (potion_ID) REFERENCES Potions(potion_ID),
-    PRIMARY KEY (potion_recipes_ID)
+    
 );
 
 /*potions_transactions sample data*/
@@ -356,11 +355,13 @@ VALUES (    /* in transaction #1, this customer purchased 10 bottles of potion #
 as one potion can require many ingredients, and one ingredient may be featured in many potions. */
 
 CREATE TABLE Potion_Recipes (
+    potion_recipes_ID int NOT NULL AUTO_INCREMENT,
     potion_ID int NOT NULL,
     ingredient_ID int NOT NULL,
     quantity int, 
     FOREIGN KEY (potion_ID) REFERENCES Potions(potion_ID) ON DELETE CASCADE,
     FOREIGN KEY (ingredient_ID) REFERENCES Ingredients(ingredient_ID),
+    PRIMARY KEY (potion_recipes_ID)
 );
 
 /*recipes sample data*/
