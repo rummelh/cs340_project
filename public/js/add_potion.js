@@ -1,3 +1,7 @@
+//Citation for the follow code:
+//Date: 5/24/2023
+//Adapted from nodejs-starter-app steps 3-8 to fit project 
+//https://github.com/osu-cs340-ecampus/nodejs-starter-app/tree/main/Step%200%20-%20Setting%20Up%20Node.js
 // Get the objects we need to modify
 let addPotionForm = document.getElementById('add-potions-form-ajax');
 

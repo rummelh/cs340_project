@@ -1,4 +1,8 @@
 function deletePotion(potion_ID) {
+//Citation for the follow code:
+//Date: 5/24/2023
+//Adapted from nodejs-starter-app steps 3-8 to fit project 
+//https://github.com/osu-cs340-ecampus/nodejs-starter-app/tree/main/Step%200%20-%20Setting%20Up%20Node.js
     // Put our data we want to send in a javascript object
     let data = {
         potion_ID: potion_ID
