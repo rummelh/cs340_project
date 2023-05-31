@@ -306,7 +306,7 @@ CREATE TABLE Potion_Transactions (
     potion_price int NOT NULL,
     quantity int NOT NULL,
     FOREIGN KEY (transaction_ID) REFERENCES Transactions(transaction_ID) ON DELETE CASCADE,
-    FOREIGN KEY (potion_ID) REFERENCES Potions(potion_ID),
+    FOREIGN KEY (potion_ID) REFERENCES Potions(potion_ID)
     
 );
 

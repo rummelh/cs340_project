@@ -72,22 +72,47 @@ app.post('/add-potion-ajax', function(req, res)
     })
 });
 
-//delete potion
-app.delete('/delete-potion-ajax/', function(req, res, next) {
+//delete potion --need to fix so it will delete from potion recipes table and potion transactions table
+app.delete('/delete-potion-ajax/', function(req,res,next){
     let data = req.body;
     let potion_ID = parseInt(data.potion_ID);
-    let deletePotions = `DELETE FROM Potions WHERE potion_ID = ?`;
+    let deletePotion_Transactions = `DELETE FROM Potion_Transactions WHERE potion_ID = ?`;
+    let deletePotion_Recipes = `DELETE FROM Potion_Recipes WHERE potion_ID = ?`;
+    let deletePotion= `DELETE FROM Potions WHERE potion_ID = ?`;
   
-    // Run the 1st query
-    db.pool.query(deletePotions, [potion_ID], function(error, rows, fields) {
-      if (error) {
-        console.log(error);
-        res.sendStatus(400);
-      } else {
-        res.sendStatus(204);
-      }
-    });
-  });
+  
+          // Run the 1st query
+          db.pool.query(deletePotion_Transactions, [potion_ID], function(error, rows, fields){
+              if (error) {
+  
+              // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+              console.log(error);
+              res.sendStatus(400);
+              }
+  
+              else
+              {
+                  // Run the second query
+                  db.pool.query(deletePotion_Recipes, [potion_ID], function(error, rows, fields) {
+
+                      if (error) {
+                          console.log(error);
+                          res.sendStatus(400);
+                      } else {
+                        //run third query
+                        db.pool.query(deletePotion, [potion_ID], function(error, rows, fields) {
+                            if (error) {
+                                console.log(error);
+                                res.sendStatus(400);
+                            } else {
+                                res.sendStatus(204);
+                            }
+                        })
+                        
+                      }
+                  })
+              }
+  })});
   
   app.put('/put-potion-ajax', function(req,res,next){
     let data = req.body;
@@ -167,21 +192,36 @@ app.delete('/delete-potion-ajax/', function(req, res, next) {
 });
 
 //DELETE spell book
-app.delete('/delete-book-ajax/', function(req, res, next) {
+app.delete('/delete-book-ajax/', function(req,res,next){
     let data = req.body;
     let book_ID = parseInt(data.book_ID);
-    let deleteBook = `DELETE FROM Spell_Books WHERE book_ID = ?`;
+    let deleteBook_Transactions = `DELETE FROM Book_Transactions WHERE book_ID = ?`;
+    let deleteBook= `DELETE FROM Spell_Books WHERE book_ID = ?`;
   
-    // Run the 1st query
-    db.pool.query(deleteBook, [book_ID], function(error, rows, fields) {
-      if (error) {
-        console.log(error);
-        res.sendStatus(400);
-      } else {
-        res.sendStatus(204);
-      }
-    });
-  });
+  
+          // Run the 1st query
+          db.pool.query(deleteBook_Transactions, [book_ID], function(error, rows, fields){
+              if (error) {
+  
+              // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+              console.log(error);
+              res.sendStatus(400);
+              }
+  
+              else
+              {
+                  // Run the second query
+                  db.pool.query(deleteBook, [book_ID], function(error, rows, fields) {
+  
+                      if (error) {
+                          console.log(error);
+                          res.sendStatus(400);
+                      } else {
+                          res.sendStatus(204);
+                      }
+                  })
+              }
+  })});
 
   //UPDATE for Spell Books
   app.put('/put-book-ajax', function(req,res,next){
@@ -227,10 +267,115 @@ app.get('/recipes', function(req, res)
         res.render('recipes');
     });
 
+//READ for Potion Ingredients
 app.get('/ingredients', function(req, res)
-    {
-        res.render('ingredients');
-    });
+{
+    let query1 = "SELECT * FROM Ingredients;";
+
+    db.pool.query(query1, function(error, rows, fields){
+        res.render('ingredients', {data: rows});
+    })
+});
+
+//CREATE for Ingredients
+app.post('/add-ingredient-ajax', function(req, res) 
+{
+  // Capture the incoming data and parse it back to a JS object
+  let data = req.body;
+
+  // Create the query and run it on the database
+  query1 = `INSERT INTO Ingredients (ingredient_name, ingredient_source) VALUES ('${data.ingredient_name}', '${data.ingredient_source}')`;
+  db.pool.query(query1, function(error, rows, fields){
+
+      // Check to see if there was an error
+      if (error) {
+
+          // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+          console.log(error)
+          res.sendStatus(400);
+      }
+      else
+      {
+          // If there was no error, perform a SELECT * on bsg_people
+          query2 = `SELECT * FROM Ingredients;`;
+          db.pool.query(query2, function(error, rows, fields){
+
+              // If there was an error on the second query, send a 400
+              if (error) {
+                  
+                  // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+                  console.log(error);
+                  res.sendStatus(400);
+              }
+              // If all went well, send the results of the query back.
+              else
+              {
+                  res.send(rows);
+              }
+          })
+      }
+  })
+});
+
+//DELETE ingredient
+app.delete('/delete-ingredient-ajax/', function(req,res,next){
+    let data = req.body;
+    let ingredient_ID = parseInt(data.ingredient_ID);
+    let deletePotion_Recipes = `DELETE FROM Potion_Recipes WHERE ingredient_ID = ?`;
+    let deleteIngredient= `DELETE FROM Ingredients WHERE ingredient_ID = ?`;
+  
+  
+          // Run the 1st query
+          db.pool.query(deletePotion_Recipes, [ingredient_ID], function(error, rows, fields){
+              if (error) {
+  
+              // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+              console.log(error);
+              res.sendStatus(400);
+              }
+  
+              else
+              {
+                  // Run the second query
+                  db.pool.query(deleteIngredient, [ingredient_ID], function(error, rows, fields) {
+  
+                      if (error) {
+                          console.log(error);
+                          res.sendStatus(400);
+                      } else {
+                          res.sendStatus(204);
+                      }
+                  })
+              }
+  })});
+
+//UPDATE for ingredient
+app.put('/put-ingredient-ajax', function(req,res,next){
+  let data = req.body;
+  console.log('Data received:', data);
+
+  let queryUpdateIngredient = `UPDATE Ingredients SET ingredient_source = ? WHERE ingredient_ID = ?`; 
+  let selectIngredient = `SELECT * FROM Ingredients WHERE ingredient_ID = ?`
+        // Run the 1st query
+        db.pool.query(queryUpdateIngredient, [`${data.ingredient_source}`, data.ingredient_name], function(error, rows, fields){
+            if (error) {
+
+            // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+            console.log(error);
+            res.sendStatus(400);
+            } else {
+              db.pool.query(selectIngredient, [data.ingredient_name], function(error,row,fields){
+                  if (error){
+                      console.log(error);
+                      res.sendStatus(400);
+                  } else {
+                      res.send(rows);
+                  }
+              }
+              )
+            }
+
+})});
 
 app.listen(PORT, function() {
     console.log('Express started on http://localhost:' + PORT + '; press Ctrl-C to terminate.')
