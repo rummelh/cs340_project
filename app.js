@@ -116,10 +116,101 @@ app.delete('/delete-potion-ajax/', function(req, res, next) {
   
   })});
 
-app.get('/books', function(req, res)
-    {
-        res.render('books');
+  //READ for Spell books
+  app.get('/books', function(req, res)
+  {
+      let query1 = "SELECT * FROM Spell_Books;";
+
+      db.pool.query(query1, function(error, rows, fields){
+          res.render('books', {data: rows});
+      })
+  });
+
+  //CREATE for Spell books
+  app.post('/add-book-ajax', function(req, res) 
+{
+    // Capture the incoming data and parse it back to a JS object
+    let data = req.body;
+
+    // Create the query and run it on the database
+    query1 = `INSERT INTO Spell_Books (book_title, book_price) VALUES ('${data.book_title}', '${data.book_price}')`;
+    db.pool.query(query1, function(error, rows, fields){
+
+        // Check to see if there was an error
+        if (error) {
+
+            // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+            console.log(error)
+            res.sendStatus(400);
+        }
+        else
+        {
+            // If there was no error, perform a SELECT * on bsg_people
+            query2 = `SELECT * FROM Spell_Books;`;
+            db.pool.query(query2, function(error, rows, fields){
+
+                // If there was an error on the second query, send a 400
+                if (error) {
+                    
+                    // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+                    console.log(error);
+                    res.sendStatus(400);
+                }
+                // If all went well, send the results of the query back.
+                else
+                {
+                    res.send(rows);
+                }
+            })
+        }
+    })
+});
+
+//DELETE spell book
+app.delete('/delete-book-ajax/', function(req, res, next) {
+    let data = req.body;
+    let book_ID = parseInt(data.book_ID);
+    let deleteBook = `DELETE FROM Spell_Books WHERE book_ID = ?`;
+  
+    // Run the 1st query
+    db.pool.query(deleteBook, [book_ID], function(error, rows, fields) {
+      if (error) {
+        console.log(error);
+        res.sendStatus(400);
+      } else {
+        res.sendStatus(204);
+      }
     });
+  });
+
+  //UPDATE for Spell Books
+  app.put('/put-book-ajax', function(req,res,next){
+    let data = req.body;
+    console.log('Data received:', data);
+  
+    let queryUpdateBook = `UPDATE Spell_Books SET book_price = ? WHERE book_ID = ?`; 
+    let selectBook = `SELECT * FROM Spell_Books WHERE book_ID = ?`
+          // Run the 1st query
+          db.pool.query(queryUpdateBook, [`${data.book_price}`, data.book_title], function(error, rows, fields){
+              if (error) {
+  
+              // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+              console.log(error);
+              res.sendStatus(400);
+              } else {
+                db.pool.query(selectBook, [data.book_title], function(error,row,fields){
+                    if (error){
+                        console.log(error);
+                        res.sendStatus(400);
+                    } else {
+                        res.send(rows);
+                    }
+                }
+                )
+              }
+  
+  })});
+
 
 app.get('/transactions', function(req, res)
     {
