@@ -72,7 +72,7 @@ app.post('/add-potion-ajax', function(req, res)
     })
 });
 
-//delete potion --need to fix so it will delete from potion recipes table and potion transactions table
+//delete potion 
 app.delete('/delete-potion-ajax/', function(req,res,next){
     let data = req.body;
     let potion_ID = parseInt(data.potion_ID);
@@ -257,16 +257,231 @@ app.get('/transactions', function(req, res)
         res.render('transactions');
     });
 
+//READ Customer
 app.get('/customers', function(req, res)
-    {
-        res.render('customers');
-    });
+{
+    let query1 = "SELECT * FROM Customers;";
 
+    db.pool.query(query1, function(error, rows, fields){
+        res.render('customers', {data: rows});
+    })
+});
+
+//CREATE Customer
+app.post('/add-customer-ajax', function(req, res) 
+{
+  // Capture the incoming data and parse it back to a JS object
+  let data = req.body;
+
+  // Create the query and run it on the database
+  query1 = `INSERT INTO Customers (first_name, last_name, email) VALUES ('${data.first_name}', '${data.last_name}', '${data.email}')`;
+  db.pool.query(query1, function(error, rows, fields){
+
+      // Check to see if there was an error
+      if (error) {
+
+          // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+          console.log(error)
+          res.sendStatus(400);
+      }
+      else
+      {
+          // If there was no error, perform a SELECT * on bsg_people
+          query2 = `SELECT * FROM Customers;`;
+          db.pool.query(query2, function(error, rows, fields){
+
+              // If there was an error on the second query, send a 400
+              if (error) {
+                  
+                  // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+                  console.log(error);
+                  res.sendStatus(400);
+              }
+              // If all went well, send the results of the query back.
+              else
+              {
+                  res.send(rows);
+              }
+          })
+      }
+  })
+});
+
+//DELETE Customer
+app.delete('/delete-customer-ajax/', function(req,res,next){
+    let data = req.body;
+    let customer_ID = parseInt(data.customer_ID);
+    let deleteTransaction = `DELETE FROM Transactions WHERE customer_ID = ?`;
+    let deleteCustomer = `DELETE FROM Customers WHERE customer_ID = ?`;
+  
+  
+          // Run the 1st query
+          db.pool.query(deleteTransaction, [customer_ID], function(error, rows, fields){
+              if (error) {
+  
+              // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+              console.log(error);
+              res.sendStatus(400);
+              }
+  
+              else
+              {
+                  // Run the second query
+                  db.pool.query(deleteCustomer, [customer_ID], function(error, rows, fields) {
+                    console.log(customer_ID);
+                      if (error) {
+                          console.log(error);
+                          res.sendStatus(400);
+                      } else {
+                          res.sendStatus(204);
+                      }
+                  })
+              }
+  })});
+
+//UPDATE Customer
+app.put('/put-customer-ajax', function(req,res,next){
+  let data = req.body;
+  console.log('Data received:', data);
+
+  let queryUpdateCustomer = `UPDATE Customers SET last_name = ?, email = ? WHERE customer_ID = ?`; 
+  let selectCustomer = `SELECT * FROM Customers WHERE customer_ID = ?`
+        // Run the 1st query
+        db.pool.query(queryUpdateCustomer, [`${data.last_name}`, `${data.email}`, data.full_name], function(error, rows, fields){
+            if (error) {
+
+            // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+            console.log(error);
+            res.sendStatus(400);
+            } else {
+              db.pool.query(selectCustomer, [data.full_name], function(error,row,fields){
+                  if (error){
+                      console.log(error);
+                      res.sendStatus(400);
+                  } else {
+                      res.send(rows);
+                  }
+              }
+              )
+            }
+
+})});
+
+//READ for potion recipes
 app.get('/recipes', function(req, res)
-    {
-        res.render('recipes');
-    });
+{
+    let query1 = "SELECT * FROM Potion_Recipes;";
 
+    // Query 2 is the same in both cases
+    let query2 = "SELECT * FROM Potions;";
+
+    let query3= "SELECT * FROM Ingredients;";
+
+    // Run the 1st query
+    db.pool.query(query1, function(error, rows, fields){
+        
+        // Save the people
+        let recipe = rows;
+        
+        // Run the second query
+        db.pool.query(query2, (error, rows, fields) => {
+            
+            // Save the planets
+            let potions = rows;
+            db.pool.query(query3,(error,rows,fields) => {
+                let ingredients = rows;
+                return res.render('recipes', {data: recipe, potions: potions, ingredients: ingredients});
+            })  
+        })
+    });
+});
+//CREATE for potion recipes
+app.post('/add-recipe-ajax', function(req, res) 
+{
+    // Capture the incoming data and parse it back to a JS object
+    let data = req.body;
+
+    // Create the query and run it on the database
+    query1 = `INSERT INTO Potion_Recipes (potion_ID, ingredient_ID, quantity) VALUES ('${data.potion_name}', '${data.ingredient_name}', ${data.ingredient_quantity})`;
+    db.pool.query(query1, function(error, rows, fields){
+
+        // Check to see if there was an error
+        if (error) {
+
+            // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+            console.log(error)
+            res.sendStatus(400);
+        }
+        else
+        {
+            // If there was no error, perform a SELECT * on bsg_people
+            query2 = `SELECT * FROM Potion_Recipes;`;
+            db.pool.query(query2, function(error, rows, fields){
+
+                // If there was an error on the second query, send a 400
+                if (error) {
+                    
+                    // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+                    console.log(error);
+                    res.sendStatus(400);
+                }
+                // If all went well, send the results of the query back.
+                else
+                {
+                    res.send(rows);
+                }
+            })
+        }
+    })
+});
+//DELETE potion recipes
+app.delete('/delete-recipe-ajax/', function(req,res,next){
+    let data = req.body;
+    let potion_recipes_ID = parseInt(data.potion_recipes_ID);
+    let deleteRecipe = `DELETE FROM Potion_Recipes WHERE potion_recipes_ID = ?`;
+
+          // Run the 1st query
+          db.pool.query(deleteRecipe, [potion_recipes_ID], function(error, rows, fields){
+              if (error) {
+  
+              // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+              console.log(error);
+              res.sendStatus(400);
+              }
+  
+              else
+              {
+                res.sendStatus(204);
+              }
+  })});
+// update for recipes
+  app.put('/put-recipe-ajax', function(req,res,next){
+    let data = req.body;
+    console.log('Data received:', data);
+  
+    let queryUpdateRecipe = `UPDATE Potion_Recipes SET potion_ID = ?, ingredient_ID = ?, quantity = ? WHERE potion_recipes_ID = ?`; 
+    let selectRecipe = `SELECT * FROM Potion_Recipes WHERE potion_recipes_ID = ?`
+    console.log(data.potion_recipes_ID);
+          // Run the 1st query
+          db.pool.query(queryUpdateRecipe, [`${data.potion_ID}`, `${data.ingredient_ID}`, `${data.quantity}`, `${data.potion_recipes_ID}`], function(error, rows, fields){
+              if (error) {
+        
+              // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+              console.log(error);
+              res.sendStatus(400);
+              } else {
+                db.pool.query(selectRecipe, [data.potion_recipes_ID], function(error,row,fields){
+                    if (error){
+                        console.log(error);
+                        res.sendStatus(400);
+                    } else {
+                        res.send(rows);
+                    }
+                }
+                )
+              }
+  
+  })});
 //READ for Potion Ingredients
 app.get('/ingredients', function(req, res)
 {
