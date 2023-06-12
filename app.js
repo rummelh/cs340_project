@@ -336,6 +336,71 @@ app.post('/add-transaction-ajax', function(req, res)
       }
   })
 });
+//delete for transaction
+app.delete('/delete-transaction-ajax/', function(req, res, next) {
+    let data = req.body;
+    let transaction_ID = parseInt(data.transaction_ID);
+    let deleteBook_Transactions = `DELETE FROM Book_Transactions WHERE transaction_ID = ?`;
+    let deletePotion_Transactions = `DELETE FROM Potion_Transactions WHERE transaction_ID = ?`;
+    let deleteTransaction = `DELETE FROM Transactions WHERE transaction_ID = ?`;
+  
+    // Run the first query
+    db.pool.query(deleteBook_Transactions, [transaction_ID], function(error, rows, fields) {
+      if (error) {
+        // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+        console.log(error);
+        res.sendStatus(400);
+      } else {
+        // Run the second query
+        db.pool.query(deletePotion_Transactions, [transaction_ID], function(error, rows, fields) {
+          if (error) {
+            console.log(error);
+            res.sendStatus(400);
+          } else {
+            // Run the third query
+            db.pool.query(deleteTransaction, [transaction_ID], function(error, rows, fields) {
+              if (error) {
+                console.log(error);
+                res.sendStatus(400);
+              } else {
+                res.sendStatus(204);
+              }
+            });
+          }
+        });
+      }
+    });
+  });
+
+//UPDATE transaction
+app.put('/put-transaction-ajax', function(req,res,next){
+    let data = req.body;
+    console.log('Data received:', data);
+  
+    let queryUpdateTransaction = `UPDATE Transactions SET customer_ID = ?, transaction_date = ?, payment_method = ? WHERE transaction_ID = ?`; 
+    let selectTransaction = `SELECT * FROM Transactions WHERE transaction_ID = ?`
+          // Run the 1st query
+          db.pool.query(queryUpdateTransaction, [`${data.customer_name}`, `${data.transaction_date}`,`${data.payment_method}`, data.transaction_ID], function(error, rows, fields){
+              if (error) {
+  
+              // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+              console.log(error);
+              res.sendStatus(400);
+              } else {
+                db.pool.query(selectTransaction, [data.transaction_ID], function(error,row,fields){
+                    if (error){
+                        console.log(error);
+                        res.sendStatus(400);
+                    } else {
+                        res.send(rows);
+                    }
+                }
+                )
+              }
+  
+  })});
+  
+
 //CREATE for potion transactions
 app.post('/add-potion-transaction-ajax', function(req, res) 
 {
