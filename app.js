@@ -252,10 +252,169 @@ app.delete('/delete-book-ajax/', function(req,res,next){
   })});
 
 
+
+//READ for transactions
 app.get('/transactions', function(req, res)
-    {
-        res.render('transactions');
+{
+    let query1 = "SELECT * FROM Transactions;";
+
+    // Query 2 is the same in both cases
+    let query2 = "SELECT * FROM Potion_Transactions;";
+
+    let query3= "SELECT * FROM Book_Transactions;";
+
+    let query4= "SELECT * FROM Customers;";
+
+    let query5= "SELECT * FROM Potions;";
+
+    let query6= "SELECT * FROM Spell_Books;";
+    // Run the 1st query
+    db.pool.query(query1, function(error, rows, fields){
+        
+        // Save the people
+        let transactions = rows;
+        
+        // Run the second query
+        db.pool.query(query2, (error, rows, fields) => {
+            
+            // Save the planets
+            let potion_transactions = rows;
+
+            db.pool.query(query3,(error,rows,fields) => {
+                let book_transactions = rows;
+
+                db.pool.query(query4,(error,rows,fields) => {
+                    let customers = rows;
+                    db.pool.query(query5,(error,rows,fields) => {
+                        let potions = rows;
+                        db.pool.query(query6,(error,rows,fields) => {
+                            let books = rows;
+                            return res.render('transactions', {transactions: transactions, potion_transactions: potion_transactions, book_transactions: book_transactions, customers: customers, potions:potions, books: books});
+                        })
+                    })
+            })  
+        })
     });
+});
+});
+//create for transactions
+app.post('/add-transaction-ajax', function(req, res) 
+{
+  // Capture the incoming data and parse it back to a JS object
+  let data = req.body;
+
+  // Create the query and run it on the database
+  query1 = `INSERT INTO Transactions (customer_ID, transaction_date, payment_method) VALUES ('${data.customer_ID}', '${data.transaction_date}', '${data.payment_method}')`;
+  db.pool.query(query1, function(error, rows, fields){
+
+      // Check to see if there was an error
+      if (error) {
+
+          // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+          console.log(error)
+          res.sendStatus(400);
+      }
+      else
+      {
+          // If there was no error, perform a SELECT * on bsg_people
+          query2 = `SELECT * FROM Transactions;`;
+          db.pool.query(query2, function(error, rows, fields){
+
+              // If there was an error on the second query, send a 400
+              if (error) {
+                  
+                  // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+                  console.log(error);
+                  res.sendStatus(400);
+              }
+              // If all went well, send the results of the query back.
+              else
+              {
+                  res.send(rows);
+              }
+          })
+      }
+  })
+});
+//CREATE for potion transactions
+app.post('/add-potion-transaction-ajax', function(req, res) 
+{
+    // Capture the incoming data and parse it back to a JS object
+    let data = req.body;
+    console.log(data)
+
+    // Create the query and run it on the database
+    query1 = `INSERT INTO Potion_Transactions (transaction_ID, potion_ID, potion_price, quantity) VALUES ('${data.transaction_ID}', '${data.potion_ID}', ${data.potion_price}, '${data.potion_quantity}')`;
+    db.pool.query(query1, function(error, rows, fields){
+
+        // Check to see if there was an error
+        if (error) {
+
+            // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+            console.log(error)
+            res.sendStatus(400);
+        }
+        else
+        {
+            // If there was no error, perform a SELECT * on bsg_people
+            query2 = `SELECT * FROM Potion_Transactions;`;
+            db.pool.query(query2, function(error, rows, fields){
+
+                // If there was an error on the second query, send a 400
+                if (error) {
+                    
+                    // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+                    console.log(error);
+                    res.sendStatus(400);
+                }
+                // If all went well, send the results of the query back.
+                else
+                {
+                    res.send(rows);
+                }
+            })
+        }
+    })
+});
+//create for book transaction
+app.post('/add-book-transaction-ajax', function(req, res) 
+{
+    // Capture the incoming data and parse it back to a JS object
+    let data = req.body;
+    console.log(data)
+    // Create the query and run it on the database
+    query1 = `INSERT INTO Book_Transactions (transaction_ID, book_ID, book_price, quantity) VALUES ('${data.transaction_ID}', '${data.book_ID}', ${data.book_price}, '${data.book_quantity}')`;
+    db.pool.query(query1, function(error, rows, fields){
+
+        // Check to see if there was an error
+        if (error) {
+
+            // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+            console.log(error)
+            res.sendStatus(400);
+        }
+        else
+        {
+            // If there was no error, perform a SELECT * on bsg_people
+            query2 = `SELECT * FROM Book_Transactions;`;
+            db.pool.query(query2, function(error, rows, fields){
+
+                // If there was an error on the second query, send a 400
+                if (error) {
+                    
+                    // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+                    console.log(error);
+                    res.sendStatus(400);
+                }
+                // If all went well, send the results of the query back.
+                else
+                {
+                    res.send(rows);
+                }
+            })
+        }
+    })
+});
 
 //READ Customer
 app.get('/customers', function(req, res)

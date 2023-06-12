@@ -8,203 +8,194 @@
 
     Here you can add, update, delete, and view the shop's transaction history.
 
-<h2>Transaction Search</h2>
 
-    <form>
 
-        <fieldset>
+    <h2>Add Transaction</h2>
 
-            <legend>Lookup by transaction ID:</legend>
-
-            <p>
-                <input type="text" id="id">
-            </p>
-
-            <p>
-                <button type="submit">Submit Search</button>
-            </p>
-
-        </fieldset>
-
-    </form>
-    <p></p>
-    <form>
+    <form id= "add-transaction-form-ajax">
 
         <fieldset>
+            <label for="input-customer_ID">Customer: </label>
+        <select name="input-customer_ID" id="input-customer_ID">
+            <option value="input-customer_ID">Select a Customer</option>
+            {{#each customers}}
+            <option value="{{this.customer_ID}}">{{this.first_name}} {{this.last_name}}</option>
+            {{/each}}
+        </select>
+            <p></p>
 
-            <legend>Lookup by customer name:</legend>
-
-                First name:
-                <input type="text" id="fname">
-                <p></p>
-                Last name:
-                <input type="text" id="lname">
-                <p></p>
-                <button type="submit">Submit Search</button>
-
-        </fieldset>
-
-    </form>
-
-
-    <h2>Add/Update Transaction</h2>
-
-    <form>
-
-        <fieldset>
+            <label for="input-transaction_date">Transaction date: </label>
+                <input type="text" name="input-transaction_date" id="input-transaction_date">
+            <p></p>
             
-            Customer ID:
-            <p>
-                <input type="text" id="customer">
-            </p>
+            <label for="input-payment_method">Payment method: </label>
+                <input type="text" name="input-payment_method" id="input-payment_method">
             
-            Item purchased:
-            <p>
-                <input type="text" id="item">
-            </p>
-
-            Quantity:
-            <p>
-                <input type="text" id="quantity">
-            </p>
+            <p></p>
+            <button type="submit">Add Transaction</button>
 
         </fieldset>
 
     </form>
+    <script src="./js/add_transaction.js"></script>
 
-    <h2>Browse All Transactions</h2>
-    
-    <table>
+    <table id="transaction-table">
         <caption>Search Results: Transactions</caption>
         <thead>
             <tr>
-                <th>Transaction ID</th>
-                <th>Customer ID</th>
-                <th> </th>
-                <th> </th>
+                {{#each transactions.[0]}}
+                <th>
+                    {{@key}}
+                </th>
+                {{/each}}
+                <th>delete</th>
             </tr>
         </thead>
 
         <tbody>
-
-            <tr>
-                <td>example</td>
-                <td>example</td>
-                <td><button type="button">Update</button></td>
-                <td><button type="button">Delete</button></td>
+            {{#each transactions}}
+            <tr data-value={{this.transaction_ID}}>
+                <td>{{this.transaction_ID}}</td>
+                <td>{{this.customer_ID}}</td>
+                <td>{{this.transaction_date}}</td>
+                <td>{{this.payment_method}}</td>
+                <td><button onclick="deleteTransaction({{this.transaction_ID}})">Delete</button></td>
             </tr>
-
-            <tr>
-                <td>example</td>
-                <td>example</td>
-                <td><button type="button">Update</button></td>
-                <td><button type="button">Delete</button></td>
-            </tr>
-
-            <tr>
-                <td>example</td>
-                <td>example</td>
-                <td><button type="button">Update</button></td>
-                <td><button type="button">Delete</button></td>
-            </tr>
-
+            {{/each}}
         </tbody>
 
     </table>
+    <script src="./js/delete_transaction.js"></script>
 
-    <h2>Browse All Potion Transaction</h2>
+    <h2>Add Potion Transaction</h2>
+
+    <form id= "add-potion-transaction-form-ajax">
+
+        <fieldset>
+            <label for="input-transaction_ID">Transaction ID: </label>
+        <select name="input-transaction_ID" id="input-transaction_ID">
+            <option value="input-transaction_ID">Select a Transaction</option>
+            {{#each transactions}}
+            <option value="{{this.transaction_ID}}">{{this.transaction_ID}}</option>
+            {{/each}}
+        </select>
+            <label for="input-potion_ID">Potion: </label>
+        <select name="input-potion_ID" id="input-potion_ID">
+            <option value="input-potion_ID">Select a Potion</option>
+            {{#each potions}}
+            <option value="{{this.potion_ID}}">{{this.potion_name}}</option>
+            {{/each}}
+        </select>
+            <p></p>
+
+            <label for="input-potion_price">Price: </label>
+                <input type="text" name="input-potion_price" id="input-potion_price">
+            <p></p>
+            
+            <label for="input-potion-quantity">quantity: </label>
+                <input type="text" name="input-potion-quantity" id="input-potion-quantity">
+            
+            <p></p>
+            <button type="submit">Add Potion Transaction</button>
+
+        </fieldset>
+
+    </form>
+    <script src="./js/add_potion_transaction.js"></script>
+
+    <h2>Browse All Potion Transactions</h2>
     
-    <table>
+       <table id="potion_transaction-table">
+        <caption>Search Results: Potion Transactions</caption>
         <thead>
             <tr>
-                <th>Transaction ID</th>
-                <th>Potion ID</th>
-                <th>Potion price</th>
-                <th>quantity</th>
-                <th> </th>
-                <th> </th>
+                {{#each potion_transactions.[0]}}
+                <th>
+                    {{@key}}
+                </th>
+                {{/each}}
+                
             </tr>
         </thead>
 
         <tbody>
-
-            <tr>
-                <td>1</td>
-                <td>2</td>
-                <td>40</td>
-                <td>2</td>
-                <td><button type="button">Update</button></td>
-                <td><button type="button">Delete</button></td>
+            {{#each potion_transactions}}
+            <tr data-value={{this.transaction_ID}}>
+                <td>{{this.transaction_ID}}</td>
+                <td>{{this.potion_ID}}</td>
+                <td>{{this.potion_price}}</td>
+                <td>{{this.quantity}}</td>
+                
             </tr>
-
-            <tr>
-                <td>1</td>
-                <td>2</td>
-                <td>40</td>
-                <td>2</td>
-                <td><button type="button">Update</button></td>
-                <td><button type="button">Delete</button></td>
-            </tr>
-
-            <tr>
-                <td>1</td>
-                <td>2</td>
-                <td>40</td>
-                <td>2</td>
-                <td><button type="button">Update</button></td>
-                <td><button type="button">Delete</button></td>
-            </tr>
-
+            {{/each}}
         </tbody>
 
     </table>
+    
+    <h2>Add Book Transaction</h2>
+
+    <form id= "add-book-transaction-form-ajax">
+
+        <fieldset>
+        <label for="input-booktransaction_ID">Transaction ID: </label>
+        <select name="input-booktransaction_ID" id="input-booktransaction_ID">
+            <option value="input-booktransaction_ID">Select a Transaction</option>
+            {{#each transactions}}
+            <option value="{{this.transaction_ID}}">{{this.transaction_ID}}</option>
+            {{/each}}
+        </select>
+            <label for="input-book_ID">book: </label>
+        <select name="input-book_ID" id="input-book_ID">
+            <option value="input-book_ID">Select a Book</option>
+            {{#each books}}
+            <option value="{{this.book_ID}}">{{this.book_title}}</option>
+            {{/each}}
+        </select>
+            <p></p>
+
+            <label for="input-book_price">Price: </label>
+                <input type="text" name="input-book_price" id="input-book_price">
+            <p></p>
+            
+            <label for="input-book-quantity">quantity: </label>
+                <input type="text" name="input-book-quantity" id="input-book-quantity">
+            
+            <p></p>
+            <button type="submit">Add Book Transaction</button>
+
+        </fieldset>
+
+    </form>
+    <script src="./js/add_book_transaction.js"></script>
 
     <h2>Browse All Spell Book Transaction</h2>
     
-    <table>
+           <table id="book_transaction-table">
+        <caption>Search Results: Spell Book Transactions</caption>
         <thead>
             <tr>
-                <th>Transaction ID</th>
-                <th>Book ID</th>
-                <th>Book price</th>
-                <th>quantity</th>
-                <th> </th>
-                <th> </th>
+                {{#each book_transactions.[0]}}
+                <th>
+                    {{@key}}
+                </th>
+                {{/each}}
             </tr>
         </thead>
 
         <tbody>
-
-            <tr>
-                <td>1</td>
-                <td>1</td>
-                <td>100</td>
-                <td>1</td>
-                <td><button type="button">Update</button></td>
-                <td><button type="button">Delete</button></td>
+            {{#each book_transactions}}
+            <tr data-value={{this.transaction_ID}}>
+                <td>{{this.transaction_ID}}</td>
+                <td>{{this.book_ID}}</td>
+                <td>{{this.book_price}}</td>
+                <td>{{this.quantity}}</td>
+                
             </tr>
-
-            <tr>
-                <td>1</td>
-                <td>1</td>
-                <td>100</td>
-                <td>1</td>
-                <td><button type="button">Update</button></td>
-                <td><button type="button">Delete</button></td>
-            </tr>
-
-            <tr>
-                <td>1</td>
-                <td>1</td>
-                <td>100</td>
-                <td>1</td>
-                <td><button type="button">Update</button></td>
-                <td><button type="button">Delete</button></td>
-            </tr>
-
+            {{/each}}
         </tbody>
 
     </table>
+    
     
 
 </body>
