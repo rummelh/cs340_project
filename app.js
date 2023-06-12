@@ -376,11 +376,15 @@ app.delete('/delete-transaction-ajax/', function(req, res, next) {
 app.put('/put-transaction-ajax', function(req,res,next){
     let data = req.body;
     console.log('Data received:', data);
-  
+    let name = data.customer_name
+    if (name === " "){
+        name = null;
+    }
+    console.log(name);
     let queryUpdateTransaction = `UPDATE Transactions SET customer_ID = ?, transaction_date = ?, payment_method = ? WHERE transaction_ID = ?`; 
     let selectTransaction = `SELECT * FROM Transactions WHERE transaction_ID = ?`
           // Run the 1st query
-          db.pool.query(queryUpdateTransaction, [`${data.customer_name}`, `${data.transaction_date}`,`${data.payment_method}`, data.transaction_ID], function(error, rows, fields){
+          db.pool.query(queryUpdateTransaction, [name, `${data.transaction_date}`,`${data.payment_method}`, data.transaction_ID], function(error, rows, fields){
               if (error) {
   
               // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
